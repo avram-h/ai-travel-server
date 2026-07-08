@@ -1,11 +1,13 @@
 {
   "name": "ai-travel-server",
   "version": "1.0.0",
-  "description": "AI\u5999\u6e38\u540e\u7aef\u670d\u52a1 - \u8c03\u7528DeepSeek API",
+  "description": "AI妙游后端服务 - 调用DeepSeek API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "node index.js"
+    "dev": "node index.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -14,5 +16,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "wrangler": "^4.107.1"
   }
 }

@@ -4,3 +4,10 @@ orders.json
 *.log
 .DS_Store
 index.html.bak
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
