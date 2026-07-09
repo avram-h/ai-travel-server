@@ -1,0 +1,54 @@
+<view class="page">
+  <text class="title">AI妙游 隐私政策</text>
+  <text class="date">更新日期：2026年7月2日</text>
+
+  <view class="section">
+    <text class="section-title">一、信息收集</text>
+    <text class="section-text">本小程序仅收集您主动填写的旅行偏好信息（目的地、预算、天数、出发城市），用于生成个性化旅行攻略。我们不收集您的姓名、手机号、身份证号等个人身份信息。</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">二、信息使用</text>
+    <text class="section-text">• 交通购票：复制 12306 或携程购票链接至剪切板，方便用户在浏览器打开购票</text>
+    <text class="section-text">您填写的信息仅用于：</text>
+    <text class="section-text">• 调用 AI 接口生成旅行攻略内容</text>
+    <text class="section-text">• 查询目的地天气、景点、美食等真实数据</text>
+    <text class="section-text">• 计算出发地与目的地之间的交通方案</text>
+    <text class="section-text">您的数据不会用于其他用途，也不会分享给第三方。</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">三、第三方服务</text>
+    <text class="section-text">本小程序使用以下第三方 API 提供数据服务：</text>
+    <text class="section-text">• 高德地图 API：获取景点、酒店、美食 POI 数据及路径规划</text>
+    <text class="section-text">• DeepSeek API：AI 内容生成</text>
+    <text class="section-text">• Pexels API：获取目的地相关图片</text>
+    <text class="section-text">• wttr.in：获取实时天气数据</text>
+    <text class="section-text">以上服务仅用于数据传输，不涉及用户个人信息共享。</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">四、位置权限</text>
+    <text class="section-text">当您使用"导航到目的地"功能时，小程序会调用微信地图展示位置，但不会获取或存储您的实时位置信息。</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">五、广告服务</text>
+    <text class="section-text">本小程序接入微信官方广告组件（流量主），广告由微信平台提供。您看到的广告可能基于微信的通用推荐算法，与本小程序收集的信息无关。</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">六、数据安全</text>
+    <text class="section-text">您的旅行偏好数据仅在生成攻略过程中临时使用，不会持久化存储。我们采用云函数安全机制，确保数据传输安全。</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">七、联系我们</text>
+    <text class="section-text">如对本隐私政策或小程序有任何疑问、建议或投诉，可通过以下方式联系我们：</text>
+    <text class="section-text">📧 邮箱：kf@aimiaoyou.cn</text>
+    <text class="section-text">💬 在线客服：点击下方按钮唤起微信客服</text>
+    <button class="contact-btn" open-type="contact">💬 联系客服</button>
+  </view>
+
+  <text class="footer">AI妙游 · 您的智能旅行助手</text>
+</view>

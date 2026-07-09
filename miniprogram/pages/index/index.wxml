@@ -1,0 +1,134 @@
+<view class="page">
+  <view class="hero-section">
+    <!-- 微小流动粒子 -->
+    <view class="hero-bg">
+      <view class="dot dot1"></view>
+      <view class="dot dot4"></view>
+      <view class="dot dot7"></view>
+      <view class="dot dot10"></view>
+      <view class="dot dot13"></view>
+      <view class="dot dot16"></view>
+      <view class="dot dot19"></view>
+      <view class="dot dot22"></view>
+      <view class="dot dot25"></view>
+      <view class="dot dot28"></view>
+    </view>
+    <view class="hero-content">
+      <text class="hero-title">AI妙游</text>
+      <text class="hero-subtitle">输入目的地，一键生成专属旅行计划</text>
+      <view class="hero-badges">
+        <text class="trust-badge-sm">📍 高德真实数据</text>
+        <text class="trust-badge-sm">🌤️ 实时天气</text>
+        <text class="trust-badge-sm">📸 真实照片</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section card fade-in">
+    <view class="form-group">
+      <text class="form-label">🚀 出发城市</text>
+      <view class="input-wrapper {{formData.departure ? 'input-filled' : ''}}">
+        <input class="form-input" placeholder="例如：上海" value="{{formData.departure}}" bindinput="onDepartureInput" />
+        <view class="input-suffix" bindtap="clearDeparture" wx:if="{{formData.departure}}"><text class="clear-btn">✕</text></view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">📍 目的地</text>
+      <view class="input-wrapper {{formData.destination ? 'input-filled' : ''}}">
+        <input class="form-input" placeholder="例如：北京、成都、日本..." value="{{formData.destination}}" bindconfirm="handleConfirmDestination" bindinput="onDestinationInput" />
+        <view class="input-suffix" bindtap="clearDestination" wx:if="{{formData.destination}}"><text class="clear-btn">✕</text></view>
+      </view>
+      <view class="suggestions {{showSuggestions ? 'show' : ''}}" wx:if="{{showSuggestions && suggestions.length > 0}}">
+        <view class="suggestion-item" wx:for="{{suggestions}}" wx:key="item" bindtap="selectSuggestion" data-item="{{item}}"><text class="suggestion-icon">📍</text><text>{{item}}</text></view>
+      </view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="form-label">💰 预算 (元)</text>
+        <view class="input-wrapper {{formData.budget ? 'input-filled' : ''}}">
+          <input class="form-input" type="digit" placeholder="例如：2000" value="{{formData.budget}}" bindinput="onBudgetInput" maxlength="6" /><text class="unit">元</text>
+        </view>
+      </view>
+      <view class="form-group half">
+        <text class="form-label">📅 游玩天数</text>
+        <view class="input-wrapper {{formData.days ? 'input-filled' : ''}}">
+          <input class="form-input" type="number" placeholder="例如：3" bindinput="onDaysInput" bindblur="onDaysBlur" /><text class="unit">天</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="quick-select">
+      <text class="quick-label">快捷选择预算：</text>
+      <view class="quick-tags">
+        <view class="quick-tag {{quickBudget === 1000 ? 'active' : ''}}" bindtap="selectQuickBudget" data-value="1000"><text>🎒 1k</text></view>
+        <view class="quick-tag {{quickBudget === 2000 ? 'active' : ''}}" bindtap="selectQuickBudget" data-value="2000"><text>🚶 2k</text></view>
+        <view class="quick-tag {{quickBudget === 3000 ? 'active' : ''}}" bindtap="selectQuickBudget" data-value="3000"><text>🌟 3k</text></view>
+        <view class="quick-tag {{quickBudget === 5000 ? 'active' : ''}}" bindtap="selectQuickBudget" data-value="5000"><text>✨ 5k</text></view>
+        <view class="quick-tag {{quickBudget === 10000 ? 'active' : ''}}" bindtap="selectQuickBudget" data-value="10000"><text>👑 10k</text></view>
+      </view>
+    </view>
+
+    <view class="hot-destinations" wx:if="{{!formData.destination}}">
+      <text class="quick-label">🔥 热门目的地：</text>
+      <view class="quick-tags">
+        <view class="hot-tag" wx:for="{{hotDestinations}}" wx:key="item" bindtap="selectDestination" data-item="{{item}}"><text>{{item}}</text></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="preview-section card fade-in" wx:if="{{showPreview}}">
+    <text class="preview-title">📊 预算概览</text>
+    <view class="preview-grid">
+      <view class="preview-item"><text class="preview-value">¥{{dailyBudget}}</text><text class="preview-label">日均预算</text></view>
+      <view class="preview-item"><text class="preview-value">¥{{accommodationBudget}}</text><text class="preview-label">住宿预算</text></view>
+      <view class="preview-item"><text class="preview-value">¥{{foodBudget}}</text><text class="preview-label">美食预算</text></view>
+      <view class="preview-item"><text class="preview-value">¥{{playBudget}}</text><text class="preview-label">游玩预算</text></view>
+      <view class="preview-item"><text class="preview-value">¥{{transportBudget}}</text><text class="preview-label">交通预算</text></view>
+    </view>
+  </view>
+
+  <view class="features-section fade-in">
+    <view class="feature-item"><text class="feature-icon">🚀</text><view class="feature-text"><text class="feature-title">交通性价比</text><text class="feature-desc">飞机/高铁/火车/大巴多方案比价，一键购票</text></view></view>
+    <view class="feature-item"><text class="feature-icon">🏛️</text><view class="feature-text"><text class="feature-title">景点 & 网红打卡</text><text class="feature-desc">高德真实POI数据，评分来自用户</text></view></view>
+    <view class="feature-item"><text class="feature-icon">🌤️</text><view class="feature-text"><text class="feature-title">天气预测</text><text class="feature-desc">逐日天气预报与出行建议</text></view></view>
+    <view class="feature-item"><text class="feature-icon">🍜</text><view class="feature-text"><text class="feature-title">美食推荐</text><text class="feature-desc">高德真实评分与人均消费参考</text></view></view>
+    <view class="feature-item"><text class="feature-icon">🏨</text><view class="feature-text"><text class="feature-title">酒店推荐</text><text class="feature-desc">按预算匹配住宿，一键导航与电话咨询</text></view></view>
+    <view class="feature-item"><text class="feature-icon">📍</text><view class="feature-text"><text class="feature-title">一键导航</text><text class="feature-desc">美食、景点、酒店直达导航</text></view></view>
+    <view class="feature-item"><text class="feature-icon">🛡️</text><view class="feature-text"><text class="feature-title">境外安全</text><text class="feature-desc">使领馆电话、紧急求助、文化习俗提醒</text></view></view>
+    <view class="feature-item"><text class="feature-icon">📸</text><view class="feature-text"><text class="feature-title">真实照片</text><text class="feature-desc">Pexels + 高德高清实拍图</text></view></view>
+  </view>
+
+  <view class="action-section">
+    <button class="generate-btn {{canGenerate ? 'active' : ''}}" disabled="{{!canGenerate || isLoading}}" bindtap="handleGenerate" wx:if="{{!isLoading}}">
+      <text>✨ 智能生成旅行攻略</text>
+    </button>
+    <!-- 加载动画 -->
+    <view class="loading-box" wx:if="{{isLoading}}">
+      <view class="loading-btn">
+        <view class="loading-shimmer"></view>
+        <view class="loading-dots">
+          <view class="ld d1"></view><view class="ld d2"></view><view class="ld d3"></view>
+          <view class="ld d4"></view><view class="ld d5"></view>
+        </view>
+        <text class="loading-text">AI 正在为你规划...</text>
+      </view>
+      <view class="wave-loader">
+        <view class="wave-ripple w1"></view>
+        <view class="wave-ripple w2"></view>
+        <view class="wave-ripple w3"></view>
+        <view class="wave-core">
+          <text class="wave-icon">🌊</text>
+        </view>
+      </view>
+      <text class="wave-text">AI 正在为你规划...</text>
+    </view>
+  </view>
+
+  <!-- 底部链接 -->
+  <view class="footer-links">
+    <text class="footer-link" bindtap="openPrivacy">📜 隐私政策</text>
+    <button class="footer-link footer-contact" open-type="contact">💬 联系客服</button>
+  </view>
+</view>

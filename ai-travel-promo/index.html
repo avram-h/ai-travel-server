@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: #0a1628;
+      }
+      body {
+        font-family: "Noto Sans SC", sans-serif;
+      }
+
+      /* Scene base */
+      .scene {
+        position: absolute; top: 0; left: 0;
+        width: 1920px; height: 1080px; overflow: hidden;
+      }
+      .scene-content {
+        display: flex; flex-direction: column;
+        width: 100%; height: 100%;
+        padding: 140px 180px; gap: 32px;
+        box-sizing: border-box;
+      }
+
+      /* Scene backgrounds */
+      #scene1 { z-index: 1; background: #0a1628; }
+      #scene2 { z-index: 2; background: #0a1628; opacity: 0; }
+      #scene3 { z-index: 3; background: #0a1628; opacity: 0; }
+      #scene4 { z-index: 4; background: #0a1628; opacity: 0; }
+      #scene5 { z-index: 5; background: #0a1628; opacity: 0; }
+
+      /* Decorative glows */
+      .glow-amber {
+        position: absolute; border-radius: 50%;
+        background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, rgba(245,158,11,0) 70%);
+        pointer-events: none;
+      }
+      .glow-teal {
+        position: absolute; border-radius: 50%;
+        background: radial-gradient(circle, rgba(13,148,136,0.15) 0%, rgba(13,148,136,0) 70%);
+        pointer-events: none;
+      }
+      .decor-circle {
+        position: absolute; border-radius: 50%;
+        border: 1px solid rgba(245,158,11,0.08);
+        pointer-events: none;
+      }
+
+      /* Scene 1 - Opening */
+      .s1-hero {
+        font-size: 120px; font-weight: 900; color: #F8FAFC;
+        letter-spacing: 0.08em; line-height: 1.1;
+      }
+      .s1-hero .accent { color: #F59E0B; }
+      .s1-sub {
+        font-size: 36px; font-weight: 300; color: #94a3b8;
+        letter-spacing: 0.15em; margin-top: 8px;
+      }
+
+      /* Scene 2 - Input */
+      .s2-label {
+        font-size: 28px; font-weight: 400; color: #64748b;
+        letter-spacing: 0.1em; margin-bottom: 24px;
+      }
+      .s2-cards {
+        display: flex; gap: 32px; width: 100%;
+      }
+      .s2-card {
+        flex: 1; background: rgba(17,24,39,0.8);
+        border: 1px solid rgba(13,148,136,0.25);
+        border-radius: 20px; padding: 48px 40px;
+        display: flex; flex-direction: column; gap: 16px;
+      }
+      .s2-card-icon {
+        font-size: 48px; line-height: 1;
+      }
+      .s2-card-label {
+        font-size: 22px; font-weight: 400; color: #64748b;
+        letter-spacing: 0.06em;
+      }
+      .s2-card-value {
+        font-size: 32px; font-weight: 700; color: #F8FAFC;
+        letter-spacing: 0.04em;
+      }
+      .s2-card-value.accent { color: #F59E0B; }
+
+      /* Scene 3 - Features */
+      .s3-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr; gap: 28px;
+        width: 100%; flex: 1;
+      }
+      .s3-feature {
+        background: rgba(17,24,39,0.8);
+        border: 1px solid rgba(245,158,11,0.15);
+        border-radius: 24px; padding: 40px 44px;
+        display: flex; flex-direction: column; gap: 12px;
+      }
+      .s3-feature-icon {
+        font-size: 44px; line-height: 1;
+      }
+      .s3-feature-title {
+        font-size: 30px; font-weight: 700; color: #F8FAFC;
+        letter-spacing: 0.04em;
+      }
+      .s3-feature-desc {
+        font-size: 20px; font-weight: 300; color: #64748b;
+        letter-spacing: 0.04em;
+      }
+      .s3-tagline {
+        text-align: center; font-size: 42px; font-weight: 900;
+        color: #F59E0B; letter-spacing: 0.06em; margin-top: 12px;
+      }
+
+      /* Scene 4 - Brand */
+      .s4-brand {
+        flex: 1; display: flex; flex-direction: column;
+        justify-content: center; align-items: flex-start; gap: 16px;
+      }
+      .s4-name {
+        font-size: 96px; font-weight: 900; color: #F8FAFC;
+        letter-spacing: 0.04em; line-height: 1.15;
+      }
+      .s4-name .dot {
+        color: #F59E0B;
+      }
+      .s4-tagline {
+        font-size: 32px; font-weight: 300; color: #0D9488;
+        letter-spacing: 0.12em;
+      }
+      .s4-divider {
+        width: 80px; height: 4px; background: #F59E0B;
+        border-radius: 2px; margin: 8px 0;
+      }
+
+      /* Scene 5 - CTA */
+      .s5-container {
+        flex: 1; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; gap: 36px;
+      }
+      .s5-cta-label {
+        font-size: 28px; font-weight: 400; color: #64748b;
+        letter-spacing: 0.2em;
+      }
+      .s5-search-bar {
+        display: flex; align-items: center; gap: 16px;
+        background: rgba(17,24,39,0.9);
+        border: 2px solid rgba(245,158,11,0.4);
+        border-radius: 60px; padding: 24px 48px;
+        width: 700px;
+      }
+      .s5-search-icon {
+        font-size: 36px; line-height: 1;
+      }
+      .s5-search-text {
+        font-size: 40px; font-weight: 700; color: #F8FAFC;
+        letter-spacing: 0.04em;
+      }
+      .s5-search-text .hl {
+        color: #F59E0B;
+      }
+      .s5-hint {
+        font-size: 22px; font-weight: 300; color: #475569;
+        letter-spacing: 0.08em;
+      }
+
+
+
+      @font-face {
+        font-family: "Noto Sans SC";
+        font-style: normal;
+        font-weight: 300 900;
+        src: url("assets/fonts/NotoSansSC.woff2") format("woff2");
+      }
+
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-at0g" id="root" data-composition-id="main" data-width="1920" data-height="1080" data-start="0" data-duration="20">
+      <!--
+        AI旅行攻略 · 20s 产品推广视频
+        脚本: 说走就走 → 输入 → 功能展示 → 品牌 → CTA
+      -->
+
+      <!-- ═══ Scene 1: Opening 0-4.5s ═══ -->
+      <div data-hf-id="hf-zet7" id="scene1" class="scene">
+        <div data-hf-id="hf-4jmy" data-layout-ignore="" class="glow-amber" style="width:1200px;height:1200px;top:-300px;left:360px;"></div>
+        <div data-hf-id="hf-za3m" data-layout-ignore="" class="decor-circle" style="width:800px;height:800px;top:140px;left:560px;"></div>
+        <div data-hf-id="hf-ezid" data-layout-ignore="" class="decor-circle" style="width:600px;height:600px;top:240px;left:660px;border-color:rgba(13,148,136,0.06);"></div>
+        <div data-hf-id="hf-m68j" class="scene-content" style="justify-content:center;align-items:flex-start;">
+          <div data-hf-id="hf-othz" id="s1-hero" class="s1-hero">说走就<span data-hf-id="hf-5c9x" class="accent">走</span></div>
+          <div data-hf-id="hf-rb5z" id="s1-sub" class="s1-sub">不用做攻略</div>
+        </div>
+      </div>
+
+      <!-- ═══ Scene 2: Input 4.5-9s ═══ -->
+      <div data-hf-id="hf-qqxc" id="scene2" class="scene">
+        <div data-hf-id="hf-uvkh" data-layout-ignore="" class="glow-teal" style="width:900px;height:900px;top:-100px;left:900px;"></div>
+        <div data-hf-id="hf-shf0" class="scene-content" style="justify-content:center;">
+          <div data-hf-id="hf-6e5p" id="s2-label" class="s2-label">输入你的旅行需求</div>
+          <div data-hf-id="hf-qe7l" class="s2-cards">
+            <div data-hf-id="hf-3jzj" id="s2-card1" class="s2-card">
+              <div data-hf-id="hf-nfly" class="s2-card-icon">📍</div>
+              <div data-hf-id="hf-4gaf" class="s2-card-label">目的地</div>
+              <div data-hf-id="hf-rps0" class="s2-card-value accent">东京</div>
+            </div>
+            <div data-hf-id="hf-uw3o" id="s2-card2" class="s2-card">
+              <div data-hf-id="hf-e24t" class="s2-card-icon">💰</div>
+              <div data-hf-id="hf-k1l6" class="s2-card-label">预算</div>
+              <div data-hf-id="hf-mgl5" class="s2-card-value">¥8000</div>
+            </div>
+            <div data-hf-id="hf-vnrh" id="s2-card3" class="s2-card">
+              <div data-hf-id="hf-k95q" class="s2-card-icon">📅</div>
+              <div data-hf-id="hf-xmvi" class="s2-card-label">天数</div>
+              <div data-hf-id="hf-0yzs" class="s2-card-value">5天</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Scene 3: Features 9-14s ═══ -->
+      <div data-hf-id="hf-ril5" id="scene3" class="scene">
+        <div data-hf-id="hf-y3v7" data-layout-ignore="" class="glow-amber" style="width:700px;height:700px;top:200px;left:-100px;"></div>
+        <div data-hf-id="hf-f9th" data-layout-ignore="" class="glow-teal" style="width:700px;height:700px;top:200px;right:-100px;"></div>
+        <div data-hf-id="hf-a66c" class="scene-content" style="justify-content:center;">
+          <div data-hf-id="hf-ldlz" class="s3-grid">
+            <div data-hf-id="hf-kg17" id="s3-f1" class="s3-feature">
+              <div data-hf-id="hf-gfpv" class="s3-feature-icon">🏛️</div>
+              <div data-hf-id="hf-kgo6" class="s3-feature-title">景点推荐</div>
+              <div data-hf-id="hf-g4co" class="s3-feature-desc">必去景点与网红打卡地</div>
+            </div>
+            <div data-hf-id="hf-bs5c" id="s3-f2" class="s3-feature">
+              <div data-hf-id="hf-mxgw" class="s3-feature-icon">🌤️</div>
+              <div data-hf-id="hf-d2s0" class="s3-feature-title">天气预报</div>
+              <div data-hf-id="hf-htb9" class="s3-feature-desc">逐日预报与出行建议</div>
+            </div>
+            <div data-hf-id="hf-cjt5" id="s3-f3" class="s3-feature">
+              <div data-hf-id="hf-b6fb" class="s3-feature-icon">🍜</div>
+              <div data-hf-id="hf-63ql" class="s3-feature-title">美食推荐</div>
+              <div data-hf-id="hf-g2po" class="s3-feature-desc">性价比环境优美食</div>
+            </div>
+            <div data-hf-id="hf-3vxa" id="s3-f4" class="s3-feature">
+              <div data-hf-id="hf-9n7a" class="s3-feature-icon">🛡️</div>
+              <div data-hf-id="hf-0fad" class="s3-feature-title">安全提醒</div>
+              <div data-hf-id="hf-wwcd" class="s3-feature-desc">境外安全一键知晓</div>
+            </div>
+          </div>
+          <div data-hf-id="hf-mvvu" id="s3-tagline" class="s3-tagline">AI 一键搞定</div>
+        </div>
+      </div>
+
+      <!-- ═══ Scene 4: Brand 14-18s ═══ -->
+      <div data-hf-id="hf-gn3i" id="scene4" class="scene">
+        <div data-hf-id="hf-w5ji" data-layout-ignore="" class="glow-amber" style="width:1000px;height:1000px;top:-200px;left:460px;"></div>
+        <div data-hf-id="hf-8xop" data-layout-ignore="" class="glow-teal" style="width:600px;height:600px;bottom:-100px;right:-50px;opacity:0.6;"></div>
+        <div data-hf-id="hf-8z99" class="scene-content" style="justify-content:center;">
+          <div data-hf-id="hf-mst5" class="s4-brand">
+            <div data-hf-id="hf-ykm6" id="s4-name" class="s4-name">AI旅行<span data-hf-id="hf-quxb" class="dot">攻</span>略</div>
+            <div data-hf-id="hf-b9da" id="s4-divider" class="s4-divider"></div>
+            <div data-hf-id="hf-i24y" id="s4-tagline" class="s4-tagline">你的随身旅行管家</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Scene 5: CTA 18-20s ═══ -->
+      <div data-hf-id="hf-kl7j" id="scene5" class="scene">
+        <div data-hf-id="hf-j3fw" data-layout-ignore="" class="glow-amber" style="width:800px;height:800px;top:140px;left:560px;opacity:0.5;"></div>
+        <div data-hf-id="hf-8q2w" class="scene-content" style="justify-content:center;align-items:center;">
+          <div data-hf-id="hf-7wlu" class="s5-container">
+            <div data-hf-id="hf-supt" id="s5-cta-label" class="s5-cta-label">微信搜索</div>
+            <div data-hf-id="hf-7lew" id="s5-search-bar" class="s5-search-bar">
+              <span data-hf-id="hf-zuba" class="s5-search-icon">🔍</span>
+              <span data-hf-id="hf-hrjz" class="s5-search-text"><span data-hf-id="hf-kfsz" class="hl">AI</span>旅行攻略</span>
+            </div>
+            <div data-hf-id="hf-g0pj" id="s5-hint" class="s5-hint">开启你的智能旅行</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audio -->
+      <audio data-hf-id="hf-bn4p" id="narration" data-start="0" data-duration="auto" data-track-index="2" src="narration-high.mp3" data-volume="1"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      var S1 = "#scene1", S2 = "#scene2", S3 = "#scene3", S4 = "#scene4", S5 = "#scene5";
+      var T1 = 4, T2 = 8.5, T3 = 13.5, T4 = 18;
+      var TRANS_DUR = 0.5;
+
+      // ─── Scene 1: Opening (0-4s) ───
+      tl.from("#s1-hero", { scale: 0.85, opacity: 0, duration: 0.55, ease: "power3.out" }, 0.25);
+      tl.from("#s1-sub",  { opacity: 0, y: 30, duration: 0.45, ease: "power2.out" }, 0.7);
+
+      // Ambient: glow breathing
+      tl.fromTo(".glow-amber", { scale: 0.9, opacity: 0.5 }, { scale: 1.05, opacity: 1, duration: 3.5, ease: "sine.inOut" }, 0.3);
+
+      // ─── Transition 1: Scene 1 → Scene 2 (4-4.5s) ───
+      tl.to(S1, { x: -1920, duration: TRANS_DUR, ease: "power3.inOut" }, T1);
+      tl.fromTo(S2, { x: 1920, opacity: 1 }, { x: 0, duration: TRANS_DUR, ease: "power3.inOut" }, T1);
+      tl.set("#scene1", { visibility: "hidden" }, T1 + TRANS_DUR);
+
+      // ─── Scene 2: Input (4.5-8.5s) ───
+      tl.from("#s2-label",  { opacity: 0, y: -20, duration: 0.4, ease: "power3.out" }, T1 + 0.2);
+      tl.from("#s2-card1",  { opacity: 0, x: 60, duration: 0.45, ease: "power3.out" }, T1 + 0.45);
+      tl.from("#s2-card2",  { opacity: 0, x: 60, duration: 0.45, ease: "power3.out" }, T1 + 0.6);
+      tl.from("#s2-card3",  { opacity: 0, x: 60, duration: 0.45, ease: "power3.out" }, T1 + 0.75);
+
+      // ─── Transition 2: Scene 2 → Scene 3 (8.5-9s) ───
+      tl.to(S2, { x: -1920, duration: TRANS_DUR, ease: "power3.inOut" }, T2);
+      tl.fromTo(S3, { x: 1920, opacity: 1 }, { x: 0, duration: TRANS_DUR, ease: "power3.inOut" }, T2);
+      tl.set("#scene2", { visibility: "hidden" }, T2 + TRANS_DUR);
+
+      // ─── Scene 3: Features (9-13.5s) ───
+      tl.from("#s3-f1", { opacity: 0, scale: 0.9, y: 20, duration: 0.4, ease: "power3.out" }, T2 + 0.15);
+      tl.from("#s3-f2", { opacity: 0, scale: 0.9, y: 20, duration: 0.4, ease: "power3.out" }, T2 + 0.28);
+      tl.from("#s3-f3", { opacity: 0, scale: 0.9, y: 20, duration: 0.4, ease: "power3.out" }, T2 + 0.41);
+      tl.from("#s3-f4", { opacity: 0, scale: 0.9, y: 20, duration: 0.4, ease: "power3.out" }, T2 + 0.54);
+      tl.from("#s3-tagline", { opacity: 0, scale: 0.8, duration: 0.5, ease: "back.out(1.5)" }, T2 + 0.85);
+
+      // ─── Transition 3: Scene 3 → Scene 4 (13.5-14s) ───
+      tl.to(S3, { x: -1920, duration: TRANS_DUR, ease: "power3.inOut" }, T3);
+      tl.fromTo(S4, { x: 1920, opacity: 1 }, { x: 0, duration: TRANS_DUR, ease: "power3.inOut" }, T3);
+      tl.set("#scene3", { visibility: "hidden" }, T3 + TRANS_DUR);
+
+      // ─── Scene 4: Brand (13.5-18s) ───
+      tl.from("#s4-name",    { opacity: 0, y: 40, duration: 0.55, ease: "power3.out" }, T3 + 0.15);
+      tl.from("#s4-divider", { scaleX: 0, transformOrigin: "left center", duration: 0.35, ease: "power3.out" }, T3 + 0.5);
+      tl.from("#s4-tagline", { opacity: 0, y: 20, duration: 0.4, ease: "power2.out" }, T3 + 0.65);
+
+      // ─── Transition 4: Scene 4 → Scene 5 (18-18.5s) ───
+      tl.to(S4, { x: -1920, duration: TRANS_DUR, ease: "power3.inOut" }, T4);
+      tl.fromTo(S5, { x: 1920, opacity: 1 }, { x: 0, duration: TRANS_DUR, ease: "power3.inOut" }, T4);
+      tl.set("#scene4", { visibility: "hidden" }, T4 + TRANS_DUR);
+
+      // ─── Scene 5: CTA (18-20s) ───
+      tl.from("#s5-cta-label",  { opacity: 0, y: -15, duration: 0.35, ease: "power3.out" }, T4 + 0.2);
+      tl.from("#s5-search-bar", { opacity: 0, scale: 0.9, duration: 0.45, ease: "back.out(1.4)" }, T4 + 0.4);
+      tl.from("#s5-hint",       { opacity: 0, duration: 0.35, ease: "power2.out" }, T4 + 0.7);
+
+      // Final fade to black
+      tl.to("#root", { opacity: 0, duration: 0.4, ease: "power2.in" }, 19.6);
+      tl.set("#scene5", { visibility: "hidden" }, 20);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

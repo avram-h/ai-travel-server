@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "openapi": [
+      "cloudbaseAIRun"
+    ]
+  },
+  "envVariables": {
+    "DEEPSEEK_API_KEY": ""
+  },
+  "triggers": [],
+  "timeout": 30
+}

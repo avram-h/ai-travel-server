@@ -1,0 +1,18 @@
+{
+  "envId": "cloud1-d8g2xdh6t2e692564",
+  "functionRoot": "./miniprogram/cloudfunctions",
+  "functions": [
+    {
+      "name": "deepseek-travel",
+      "timeout": 30,
+      "runtime": "Nodejs18.15",
+      "memorySize": 256,
+      "envVariables": {
+        "DEEPSEEKKEY": "YOUR_DEEPSEEK_KEY",
+        "PEXELS_KEY": "YOUR_PEXELS_KEY",
+        "AMAP_KEY": "YOUR_AMAP_KEY"
+      },
+      "handler": "index.main"
+    }
+  ]
+}

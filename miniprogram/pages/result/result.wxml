@@ -1,0 +1,337 @@
+<view class="page">
+  <!-- 顶部头部 -->
+  <view class="result-header" style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 50%, #6a1b9a 100%);">
+    <!-- 微粒子 -->
+    <view class="header-dots">
+      <view class="hd hd1"></view>
+      <view class="hd hd3"></view>
+      <view class="hd hd6"></view>
+      <view class="hd hd9"></view>
+      <view class="hd hd12"></view>
+      <view class="hd hd15"></view>
+      <view class="hd hd18"></view>
+      <view class="hd hd20"></view>
+    </view>
+    <view class="header-content">
+      <text class="header-title">{{data.destination}} 旅行攻略</text>
+      <view class="header-meta">
+        <text class="meta-item">📅 {{data.days}}天</text>
+        <text class="meta-item">💰 ¥{{data.budget}}</text>
+        <text class="meta-item">📊 {{data.budgetLevel.label}}</text>
+      </view>
+      <view class="header-summary">
+        <text class="summary-text">已为你智能规划{{data.destination}}的{{data.days}}天行程</text>
+      </view>
+      <view class="header-trust">
+        <text class="trust-badge">📍 高德真实数据</text>
+        <text class="trust-badge">🌤️ 实时天气</text>
+        <text class="trust-badge">📸 真实照片</text>
+      </view>
+    </view>
+    <view class="header-wave">
+      <view class="wave wave1"></view>
+      <view class="wave wave2"></view>
+      <view class="wave wave3"></view>
+    </view>
+  </view>
+
+  <!-- 导航锚点 -->
+  <scroll-view class="nav-tabs" scroll-x enable-flex>
+    <view class="nav-tab {{activeTab === 'transport' ? 'active' : ''}}" bindtap="scrollTo" data-target="transport" wx:if="{{data.transport}}">
+      <text>🚀 交通</text>
+    </view>
+    <view class="nav-tab {{activeTab === 'attractions' ? 'active' : ''}}" bindtap="scrollTo" data-target="attractions">
+      <text>🏛️ 景点</text>
+    </view>
+    <view class="nav-tab {{activeTab === 'instagram' ? 'active' : ''}}" bindtap="scrollTo" data-target="instagram">
+      <text>📸 网红打卡</text>
+    </view>
+    <view class="nav-tab {{activeTab === 'weather' ? 'active' : ''}}" bindtap="scrollTo" data-target="weather">
+      <text>🌤️ 天气</text>
+    </view>
+    <view class="nav-tab {{activeTab === 'hotels' ? 'active' : ''}}" bindtap="scrollTo" data-target="hotels">
+      <text>🏨 酒店</text>
+    </view>
+    <view class="nav-tab {{activeTab === 'food' ? 'active' : ''}}" bindtap="scrollTo" data-target="food">
+      <text>🍜 美食</text>
+    </view>
+    <view class="nav-tab {{activeTab === 'safety' ? 'active' : ''}}" bindtap="scrollTo" data-target="safety" wx:if="{{data.isOverseas}}">
+      <text>🛡️ 安全</text>
+    </view>
+  </scroll-view>
+
+  <!-- 加载骨架 -->
+  <view class="loading-skel" wx:if="{{!pageReady}}">
+    <view class="skel-block"></view>
+    <view class="skel-block short"></view>
+    <view class="skel-block"></view>
+    <view class="skel-block short"></view>
+    <view class="skel-block"></view>
+  </view>
+
+
+  <view wx:if="{{pageReady}}">
+  <!-- ==================== 交通性价比 ==================== -->
+  <view class="section-wrapper" id="transport" wx:if="{{data.transport}}">
+    <view class="section-header">
+      <text class="section-title-icon">🚀</text>
+      <text class="section-title-text">交通性价比</text>
+      <text class="source-tag live">高德路线</text>
+    </view>
+    <view class="transport-card card">
+      <view class="transport-route">
+        <text class="tr-from">{{data.departure || '出发地'}}</text>
+        <text class="tr-arrow">→</text>
+        <text class="tr-to">{{data.destination}}</text>
+        <text class="tr-info">{{data.transport.distance}}km · 驾车约{{data.transport.duration}}h</text>
+      </view>
+      <view class="transport-list">
+        <view class="transport-item {{item.best ? 'best' : ''}}" wx:for="{{data.transport.modes}}" wx:key="type">
+          <view class="ti-left">
+            <text class="ti-icon">{{item.icon}}</text>
+            <view class="ti-info">
+              <text class="ti-name">{{item.type}}</text>
+              <text class="ti-note">{{item.note}}</text>
+            </view>
+          </view>
+          <view class="ti-mid">
+            <text class="ti-price">¥{{item.price}}</text>
+            <text class="ti-time">约{{item.time}}h</text>
+          </view>
+          <view class="ti-right">
+            <button wx:if="{{item.isDrive}}" class="ti-buy-btn nav-btn" bindtap="navigateDrive" data-to="{{data.destination}}">🧭 导航</button>
+            <button wx:else class="ti-buy-btn" bindtap="buyTicket" data-type="{{item.type}}" data-from="{{data.departure}}" data-to="{{data.destination}}">购票</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 景点推荐 ==================== -->
+  <view class="section-wrapper" id="attractions">
+    <view class="section-header">
+      <text class="section-title-icon">🏛️</text>
+      <text class="section-title-text">必去景点推荐</text><text class="source-tag" wx:if="{{!data.isOverseas}}">高德POI</text>
+      <text class="section-count">{{data.attractions.length}}个</text>
+    </view>
+    <scroll-view class="card-scroll" scroll-x>
+      <view class="card-scroll-inner">
+        <view class="attraction-card" wx:for="{{data.attractions}}" wx:key="name" wx:for-item="item">
+          <view class="img-nav-btn" bindtap="navigateToRestaurant" data-name="{{item.name}}" data-city="{{data.destination}}" data-lon="{{item.location.longitude}}" data-lat="{{item.location.latitude}}">
+            <text class="img-nav-icon">🧭</text>
+          </view>
+          <image class="attraction-image" bindtap="previewImage" data-src="{{item.image}}" src="{{item.image}}" mode="aspectFill" lazy-load binderror="onImageError" data-imgkey="attr-{{item.name}}" />
+          <view class="attraction-overlay">
+            <view class="attraction-tags">
+              <text class="tag-sm" wx:for="{{item.tags}}" wx:key="this">{{item}}</text>
+            </view>
+          </view>
+          <view class="attraction-info">
+            <view class="attraction-header">
+              <text class="attraction-name">{{item.name}}</text>
+              <text class="attraction-rating">⭐ {{item.rating}}</text>
+            </view>
+            <text class="attraction-desc">{{item.desc}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ==================== 网红打卡点 ==================== -->
+  <view class="section-wrapper" id="instagram">
+    <view class="section-header">
+      <text class="section-title-icon">📸</text>
+      <text class="section-title-text">网红打卡点</text><text class="source-tag" wx:if="{{!data.isOverseas}}">高德POI</text>
+      <text class="section-count">{{data.instagramSpots.length}}个</text>
+    </view>
+    <view class="instagram-grid">
+      <view class="instagram-card" wx:for="{{data.instagramSpots}}" wx:key="name" wx:for-item="item">
+          <view class="img-nav-btn" bindtap="navigateToRestaurant" data-name="{{item.name}}" data-city="{{data.destination}}" data-lon="{{item.location.longitude}}" data-lat="{{item.location.latitude}}">
+            <text class="img-nav-icon">🧭</text>
+          </view>
+          <image class="instagram-image" bindtap="previewImage" data-src="{{item.image}}" src="{{item.image}}" mode="aspectFill" lazy-load binderror="onImageError" data-imgkey="ig-{{item.name}}" />
+
+        <view class="instagram-info">
+        <view class="instagram-type">{{item.type}}</view>
+          <text class="instagram-name">{{item.name}}</text>
+          <text class="instagram-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 天气预报 ==================== -->
+  <view class="section-wrapper" id="weather">
+    <view class="section-header">
+      <text class="section-title-icon">🌤️</text>
+      <text class="section-title-text">未来{{data.weather.length}}天天气</text>
+    </view>
+    <view class="weather-overview card">
+      <view class="weather-summary">
+        <text class="weather-temp-range">{{tempRange}}</text>
+        <text class="weather-advice">{{overallAdvice}}</text>
+      </view>
+    </view>
+    <scroll-view class="weather-scroll" scroll-x>
+      <view class="weather-scroll-inner">
+        <view class="weather-card" wx:for="{{data.weather}}" wx:key="date" wx:for-item="item">
+          <text class="weather-weekday">{{item.weekday}}</text>
+          <text class="weather-date">{{item.date}}</text>
+          <text class="weather-condition">{{item.condition}}</text>
+          <view class="weather-temp-bar">
+            <view class="temp-bar-inner" style="left: {{item.tempBarLeft}}%; width: {{item.tempBarWidth}}%;"></view>
+          </view>
+          <view class="weather-temps">
+            <text class="temp-low">{{item.low}}°</text>
+            <text class="temp-high">{{item.high}}°</text>
+          </view>
+          <view class="weather-detail">
+            <text class="weather-detail-item">💧 {{item.humidity}}%</text>
+            <text class="weather-detail-item">🌬️ {{item.wind}}</text>
+            <text class="weather-detail-item">☀️ {{item.uv}}</text>
+          </view>
+          <text class="weather-advice-text">{{item.advice}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  
+  <!-- ==================== 酒店推荐 ==================== -->
+  <view class="section-wrapper" id="hotels">
+    <view class="section-header">
+      <text class="section-title-icon">🏨</text>
+      <text class="section-title-text">住宿推荐</text><text class="source-tag" wx:if="{{!data.isOverseas}}">高德POI</text>
+      <text class="section-count">{{data.hotels.length}}家</text>
+    </view>
+    <view class="hotel-list">
+      <view class="hotel-card card" wx:for="{{data.hotels}}" wx:key="name" wx:for-item="item" bindtap="openHotelDetail" data-index="{{index}}" data-name="{{item.name}}">
+        <image class="hotel-image" src="{{item.image}}" mode="aspectFill" lazy-load binderror="onImageError" data-imgkey="hotel-{{item.name}}" />
+        <view class="hotel-badge" wx:if="{{item.star}}">{{item.star}}星</view>
+        <view class="food-content">
+          <view class="food-header">
+            <text class="food-name">{{item.name}}</text>
+            <view class="hotel-rating-row">
+              <text class="food-score">⭐ {{item.rating}}</text>
+              <text class="hotel-star" wx:if="{{item.star}}">{{item.star}}星</text>
+            </view>
+          </view>
+          <text class="food-desc">{{item.desc}}</text>
+          <view class="food-meta">
+            <text class="food-price">💰 参考价 ¥{{item.price}}起</text>
+            <text class="hotel-tel" wx:if="{{item.tel}}">📞 {{item.tel}}</text>
+          </view>
+          <view class="food-tags">
+            <text class="tag-sm" wx:for="{{item.tags}}" wx:key="this">{{item}}</text>
+          </view>
+          <view class="hotel-click-hint">点击查看详情 →</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+<!-- ==================== 美食推荐 ==================== -->
+  <view class="section-wrapper" id="food">
+    <view class="section-header">
+      <text class="section-title-icon">🍜</text>
+      <text class="section-title-text">美食推荐</text><text class="source-tag" wx:if="{{!data.isOverseas}}">高德POI</text>
+      <text class="section-count">{{data.foods.length}}家</text>
+    </view>
+    <view class="food-list">
+      <view class="food-card card" wx:for="{{data.foods}}" wx:key="name" wx:for-item="item">
+        
+        <view class="food-content">
+          <view class="food-header">
+            <text class="food-name">{{item.name}}</text>
+            <text class="food-score">⭐ {{item.score}}</text>
+          </view>
+          <text class="food-desc">{{item.desc}}</text>
+          <view class="food-meta">
+            <text class="food-price">💰 人均约 ¥{{item.price}}</text>
+            <text class="food-budget {{item.budgetClass}}">{{item.budgetMatch}}</text>
+          </view>
+          <view class="food-tags">
+            <text class="tag-sm" wx:for="{{item.tags}}" wx:key="this">{{item}}</text>
+          </view>
+          <view class="food-nav" bindtap="navigateToRestaurant" data-name="{{item.name}}" data-city="{{data.destination}}" data-lon="{{item.location.longitude}}" data-lat="{{item.location.latitude}}">
+            <text class="food-nav-icon">📍</text>
+            <text class="food-nav-text">带我去这里</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 境外安全提醒 ==================== -->
+  <view class="section-wrapper" id="safety" wx:if="{{data.isOverseas && data.safetyInfo}}">
+    <view class="section-header">
+      <text class="section-title-icon">🛡️</text>
+      <text class="section-title-text">境外安全提醒</text>
+      <text class="section-count badge-warning">重要</text>
+    </view>
+
+    <!-- 安全评级 -->
+    <view class="safety-level card">
+      <view class="safety-level-header">
+        <text class="safety-flag">🛡️</text>
+        <view class="safety-level-info">
+          <text class="safety-country">{{data.safetyInfo.country}}</text>
+          <text class="safety-level-badge {{data.safetyInfo.levelColor}}">安全评级：{{data.safetyInfo.level}}</text>
+        </view>
+      </view>
+      <view class="safety-contacts">
+        <view class="contact-item">
+          <text class="contact-label">📞 大使馆电话</text>
+          <text class="contact-value selectable">{{data.safetyInfo.embassyPhone}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">🚨 紧急求助</text>
+          <text class="contact-value selectable">{{data.safetyInfo.emergencyPhone}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 当地新闻 -->
+    <view class="local-news card" wx:if="{{data.localNews && data.localNews.length > 0}}">
+      <text class="card-section-title">📰 当地最新动态</text>
+      <view class="news-item" wx:for="{{data.localNews}}" wx:key="title" wx:for-item="item">
+        <view class="news-dot"></view>
+        <view class="news-content">
+          <text class="news-title">{{item.title}}</text>
+          <text class="news-meta">{{item.source}} · {{item.date}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 安全提示 -->
+    <view class="safety-tips card">
+      <text class="card-section-title">⚠️ 安全提醒</text>
+      <view class="tip-item" wx:for="{{data.safetyInfo.alerts}}" wx:key="this" wx:for-item="item">
+        <text class="tip-bullet">•</text>
+        <text class="tip-text">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 出行建议 -->
+    <view class="safety-tips card">
+      <text class="card-section-title">💡 出行建议</text>
+      <view class="tip-item" wx:for="{{data.safetyInfo.tips}}" wx:key="this" wx:for-item="item">
+        <text class="tip-bullet tip-green">•</text>
+        <text class="tip-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 广告位 -->
+  <view class="ad-section" wx:if="{{showAd}}">
+    <ad unit-id="adunit-banner-placeholder" ad-type="banner" ad-theme="white" binderror="onAdError" bindload="onAdLoad"></ad>
+  </view>
+
+  </view>
+  <!-- 页脚 -->
+  <view class="footer">
+    <text class="footer-text">AI妙游 · 数据仅供参考</text>
+    <text class="footer-sub">请以实际情况为准，出行注意安全</text>
+  </view>
+</view>

@@ -1,0 +1,21 @@
+/** 设计变量 */
+page {
+  --bg-primary: #f5f7fa;
+  --bg-card: #ffffff;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c9b;
+  --text-muted: #b0b8c4;
+  --color-primary: #1a73e8;
+  --color-primary-dark: #1557b0;
+  --color-primary-light: #e8f0fe;
+  --color-accent: #ff6b6b;
+  --color-success: #0d9f6e;
+  --color-warning: #e3741a;
+  --color-danger: #e31a1a;
+  --radius-sm: 12rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 28rpx;
+  --shadow-sm: 0 2rpx 8rpx rgba(0,0,0,0.06);
+  --shadow-md: 0 4rpx 20rpx rgba(0,0,0,0.08);
+  --shadow-lg: 0 8rpx 40rpx rgba(0,0,0,0.12);
+}

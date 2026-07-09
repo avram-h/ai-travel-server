@@ -1,0 +1,9 @@
+{
+  "name": "deepseek-travel",
+  "version": "3.0.0",
+  "description": "AI 旅行攻略云函数 - 支持 DeepSeek API 和微信云开发 AI",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

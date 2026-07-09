@@ -1,0 +1,70 @@
+<view class="page" wx:if="{{hotel}}">
+  <!-- 顶部大图轮播 -->
+  <swiper class="photo-swiper" wx:if="{{photos.length > 0}}" indicator-dots indicator-color="rgba(255,255,255,0.4)" indicator-active-color="#fff" circular>
+    <swiper-item wx:for="{{photos}}" wx:key="index">
+      <image class="swiper-image" src="{{item}}" mode="aspectFill" lazy-load bindtap="previewImage" data-src="{{item}}" />
+    </swiper-item>
+  </swiper>
+  <view class="photo-placeholder" wx:else>
+    <text class="placeholder-icon">🏨</text>
+    <text class="placeholder-text">暂无酒店照片</text>
+  </view>
+
+  <!-- 酒店基本信息 -->
+  <view class="info-section">
+    <view class="hotel-name-row">
+      <text class="hotel-name">{{hotel.name}}</text>
+      <view class="star-badge" wx:if="{{hotel.star}}">
+        <text>{{hotel.star}}星级</text>
+      </view>
+    </view>
+
+    <view class="rating-row">
+      <text class="rating-text">⭐ {{hotel.rating || '--'}} 高德评分</text>
+      <text class="price-text">💰 参考价 ¥{{hotel.price}}起</text>
+    </view>
+
+    <view class="divider"></view>
+
+    <!-- 描述 -->
+    <view class="desc-section">
+      <text class="section-label">📝 推荐理由</text>
+      <text class="desc-text">{{hotel.desc || '暂无描述'}}</text>
+    </view>
+
+    <view class="divider"></view>
+
+    <!-- 标签 -->
+    <view class="tags-section" wx:if="{{hotel.tags && hotel.tags.length > 0}}">
+      <text class="section-label">🏷️ 特色标签</text>
+      <view class="tags-row">
+        <text class="tag-item" wx:for="{{hotel.tags}}" wx:key="this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="divider" wx:if="{{hotel.tags && hotel.tags.length > 0}}"></view>
+
+    <!-- 地址 -->
+    <view class="info-row">
+      <text class="info-icon">📍</text>
+      <text class="info-text">{{hotel.address || '暂无地址信息'}}</text>
+    </view>
+
+    <!-- 电话 -->
+    <view class="info-row tel-row" wx:if="{{hotel.tel}}" bindtap="callHotel">
+      <text class="info-icon">📞</text>
+      <text class="info-text tel-text">{{hotel.tel}}</text>
+      <text class="call-btn">拨打</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bottom-btn nav-btn" bindtap="navigateToHotel">
+      <text>📍 导航到酒店</text>
+    </view>
+    <view class="bottom-btn call-btn-primary" bindtap="callHotel" wx:if="{{hotel.tel}}">
+      <text>📞 致电咨询</text>
+    </view>
+  </view>
+</view>
